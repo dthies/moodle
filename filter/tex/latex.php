@@ -44,7 +44,7 @@
 
             // $fontsize don't affects to formula's size. $density can change size
             $doc =  "\\documentclass[{$fontsize}pt]{article}\n";
-            $doc .= get_config('filter_tex', 'latexpreamble');
+            $doc .=  $CFG->filter_tex_latexpreamble;
             $doc .= "\\pagestyle{empty}\n";
             $doc .= "\\begin{document}\n";
 //dlnsk            $doc .= "$ {$formula} $\n";
@@ -90,8 +90,7 @@
             global $CFG;
 
             // quick check - will this work?
-            $pathlatex = get_config('filter_tex', 'pathlatex');
-            if (empty($pathlatex)) {
+            if (empty($CFG->filter_tex_pathlatex)) {
                 return false;
             }
 
@@ -101,8 +100,8 @@
             $tex = "{$this->temp_dir}/$filename.tex";
             $dvi = "{$this->temp_dir}/$filename.dvi";
             $ps  = "{$this->temp_dir}/$filename.ps";
-            $convertformat = get_config('filter_tex', 'convertformat');
-            $img = "{$this->temp_dir}/$filename.{$convertformat}";
+            $svg  = "{$this->temp_dir}/$filename.svg";
+            $img = "{$this->temp_dir}/$filename.{$CFG->filter_tex_convertformat}";
 
             // turn the latex doc into a .tex file in the temp area
             $fh = fopen( $tex, 'w' );
@@ -110,17 +109,23 @@
             fclose( $fh );
 
             // run latex on document
-            $command = "{$pathlatex} --interaction=nonstopmode --halt-on-error $tex";
+            $command = "{$CFG->filter_tex_pathlatex} --interaction=nonstopmode --halt-on-error $tex";
             chdir( $this->temp_dir );
             if ($this->execute($command, $log)) { // It allways False on Windows
 //                return false;
             }
 
             // run dvips (.dvi to .ps)
-            $pathdvips = get_config('filter_tex', 'pathdvips');
-            $command = "{$pathdvips} -E $dvi -o $ps";
+            $command = "{$CFG->filter_tex_pathdvips} -E $dvi -o $ps";
             if ($this->execute($command, $log )) {
                 return false;
+            }
+            // run dvisvgm (.dvi to .svg)
+            if($CFG->filter_tex_convertformat='svg'){
+                $command = "{$CFG->filter_tex_pathdvisvgm} -E $ps -o $svg";
+                if ($this->execute($command, $log )) {
+                    return false;
+                }
             }
 
             // run convert on document (.ps to .gif/.png)
@@ -129,9 +134,8 @@
             } else {
                 $bg_opt = "";
             }
-            $pathconvert = get_config('filter_tex', 'pathconvert');
-            $command = "{$pathconvert} -density $density -trim $bg_opt $ps $img";
-            if ($this->execute($command, $log )) {
+            $command = "{$CFG->filter_tex_pathconvert} -density $density -trim $bg_opt $ps $img";
+            if ($CFG->filter_tex_convertformat!='svg' and $this->execute($command, $log )) {
                 return false;
             }
 
@@ -149,8 +153,7 @@
             unlink( "{$this->temp_dir}/$filename.tex" );
             unlink( "{$this->temp_dir}/$filename.dvi" );
             unlink( "{$this->temp_dir}/$filename.ps" );
-            $convertformat = get_config('filter_tex', 'convertformat');
-            unlink( "{$this->temp_dir}/$filename.{$convertformat}" );
+            unlink( "{$this->temp_dir}/$filename.{$CFG->filter_tex_convertformat}" );
             unlink( "{$this->temp_dir}/$filename.aux" );
             unlink( "{$this->temp_dir}/$filename.log" );
             return;
