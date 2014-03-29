@@ -1,0 +1,10 @@
+{
+  "name": "moodle-filter_tex-mathjax",
+  "builds": {
+    "moodle-filter_tex-mathjax": {
+      "jsfiles": [
+        "mathjax.js"
+      ]
+    }
+  }
+}

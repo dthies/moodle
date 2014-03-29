@@ -117,6 +117,7 @@ class filter_tex extends moodle_text_filter {
         if (!preg_match('/<tex/i',$text) and !strstr($text,'$$') and !strstr($text,'\\[') and !preg_match('/\[tex/i',$text)) { //added one more tag (dlnsk)
             return $text;
         }
+$this->get_required_javascript();
 
 #    //restrict filtering to forum 130 (Maths Tools on moodle.org)
 #    $scriptname = $_SERVER['SCRIPT_NAME'];
@@ -181,12 +182,26 @@ class filter_tex extends moodle_text_filter {
                 $texcache->timemodified = time();
                 $DB->insert_record("cache_filters", $texcache, false);
             }
-            $convertformat = get_config('filter_tex', 'convertformat');
-            $filename = $md5.".{$convertformat}";
+            $filename = $md5 . ".{$CFG->filter_tex_convertformat}";
             $text = str_replace( $matches[0][$i], filter_text_image($filename, $texexp, 0, 0, $align, $alt), $text);
         }
         return $text;
     }
+
+
+ function get_required_javascript() {
+    global $CFG, $PAGE;
+    if(true){//Put condition to disable mathjax
+    $PAGE->requires->yui_module('moodle-filter_tex-mathjax', 'M.filter_tex.init'
+//                 ,array(array('displaytype'=>$this->displaytype))
+              );
+    }
+    $mathjaxurl = (strpos($CFG->wwwroot,'https://')!==false? 'https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js' :'http://cdn.mathjax.org/mathjax/latest/MathJax.js' );
+    if(get_config('block_displaymath')->mathjaxurl){
+        $mathjaxurl=get_config('block_displaymath')->mathjaxurl; }
+    $PAGE->requires->js( new moodle_url( $mathjaxurl . 
+        '?config=TeX-MML-AM_HTMLorMML-full&delayStartupUntil=configured'));
+
+  }
+
 }
-
-

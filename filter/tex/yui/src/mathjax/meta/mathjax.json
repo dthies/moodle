@@ -1,0 +1,8 @@
+{
+  "moodle-filter_tex-mathjax": {
+    "requires": [
+        "base",
+        "node"
+    ]
+  }
+}
