@@ -25,4 +25,4 @@
 
 $string['filtername'] = 'TeX notation';
 $string['source'] = 'TeX source';
-$string['pathdvisvgm'] = 'Path of <em>dvisgm</em> binary';
+$string['pathdvisvgm'] = 'Path of <em>dvisvgm</em> binary';

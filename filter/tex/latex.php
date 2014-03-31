@@ -121,7 +121,7 @@
                 return false;
             }
             // run dvisvgm (.dvi to .svg)
-            if($CFG->filter_tex_convertformat='svg'){
+            if($CFG->filter_tex_convertformat=='svg'){
                 $command = "{$CFG->filter_tex_pathdvisvgm} -E $ps -o $svg";
                 if ($this->execute($command, $log )) {
                     return false;
@@ -135,7 +135,7 @@
                 $bg_opt = "";
             }
             $command = "{$CFG->filter_tex_pathconvert} -density $density -trim $bg_opt $ps $img";
-            if ($CFG->filter_tex_convertformat!='svg' and $this->execute($command, $log )) {
+            if ($CFG->filter_tex_convertformat!=='svg' and $this->execute($command, $log )) {
                 return false;
             }
 

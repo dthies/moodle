@@ -46,7 +46,7 @@ if ($ADMIN->fulltree) {
         // most likely needs a fink install (fink.sf.net)
         $default_filter_tex_pathlatex   = "/sw/bin/latex";
         $default_filter_tex_pathdvips   = "/sw/bin/dvips";
-        $default_filter_tex_pathdvisvgm = "/sw/bin/dvisvgm";
+        $default_filter_tex_pathconvert = "/sw/bin/convert";
 
     } else if (PHP_OS=='WINNT' or PHP_OS=='WIN32' or PHP_OS=='Windows') {
         // note: you need Ghostscript installed (standard), miktex (standard)
