@@ -221,6 +221,13 @@
             $executables_exist = false;
             $output .= "<b>Error:</b> convert executable ($CFG->filter_tex_pathconvert) is not readable<br />\n";
         }
+        if (is_file($CFG->filter_tex_pathdvisvgm)) {
+            $output .= "dvisvgm executable ($CFG->filter_tex_pathdvisvgm) is readable<br />\n";
+        }
+        else {
+            $executables_exist = false;
+            $output .= "<b>Error:</b> dvisvgm executable ($CFG->filter_tex_pathdvisvgm) is not readable<br />\n";
+        }
 
         // knowing that it might work..
         $md5 = md5($expression);
@@ -251,8 +258,12 @@
         $cmd = "$CFG->filter_tex_pathdvips -E $dvi -o $ps";
         $output .= execute($cmd);
 
-        // step 3: convert command
-        $cmd = "$CFG->filter_tex_pathconvert -density 240 -trim $ps $img ";
+        // step 3: convert or dvisvgm command
+        if($CFG->filter_tex_convertformat=='svg') {
+            $cmd = "$CFG->filter_tex_pathdvisvgm -E $ps -o $img";
+        } else {
+            $cmd = "$CFG->filter_tex_pathconvert -density 240 -trim $ps $img ";
+        }
         $output .= execute($cmd);
 
         if (!$graphic) {
@@ -334,7 +345,7 @@ searches the database cache_filters table to see if this TeX expression had been
 processed before. If not, it adds a DB entry for that expression.  It then
 replaces the TeX expression by an &lt;img src=&quot;.../filter/tex/pix.php...&quot;&gt;
 tag.  The filter/tex/pix.php script then searches the database to find an
-appropriate gif/png image file for that expression and to create one if it doesn't exist.
+appropriate gif/png/svg image file for that expression and to create one if it doesn't exist.
 It will then use either the LaTex/Ghostscript renderer (using external executables
 on your system) or the bundled Mimetex executable. The full Latex/Ghostscript
 renderer produces better results and is tried first.
@@ -345,7 +356,7 @@ you might try to fix them.</p>
 process this expression. Then the database entry for that expression contains
 a bad TeX expression in the rawtext field (usually blank). You can fix this
 by clicking on &quot;Delete DB Entry&quot;</li>
-<li>The TeX to gif/png image conversion process does not work.
+<li>The TeX to gif/png/svg image conversion process does not work.
 If paths are specified in the filter configuation screen for the three
 executables these will be tried first. Note that they still must be correctly
 installed and have the correct permissions. In particular make sure that you

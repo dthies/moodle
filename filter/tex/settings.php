@@ -40,6 +40,7 @@ if ($ADMIN->fulltree) {
         $default_filter_tex_pathlatex   = "/usr/bin/latex";
         $default_filter_tex_pathdvips   = "/usr/bin/dvips";
         $default_filter_tex_pathconvert = "/usr/bin/convert";
+        $default_filter_tex_pathdvisvgm = "/usr/bin/dvisvgm";
 
     } else if (PHP_OS=='Darwin') {
         // most likely needs a fink install (fink.sf.net)
@@ -63,11 +64,12 @@ if ($ADMIN->fulltree) {
     $items[] = new admin_setting_configexecutable('filter_tex_pathlatex', get_string('pathlatex', 'admin'), '', $default_filter_tex_pathlatex);
     $items[] = new admin_setting_configexecutable('filter_tex_pathdvips', get_string('pathdvips', 'admin'), '', $default_filter_tex_pathdvips);
     $items[] = new admin_setting_configexecutable('filter_tex_pathconvert', get_string('pathconvert', 'admin'), '', $default_filter_tex_pathconvert);
+    $items[] = new admin_setting_configexecutable('filter_tex_pathdvisvgm', get_string('pathdvisvgm', 'admin'), '', $default_filter_tex_pathdvisvgm);
 
     // Even if we offer GIF and PNG formats here, in the update callback we check whether
-    // all the paths actually point to executables. If they don't, we force the setting
+    // all required paths actually point to executables. If they don't, we force the setting
     // to GIF, as that's the only format mimeTeX can produce.
-    $formats = array('gif' => 'GIF', 'png' => 'PNG');
+    $formats = array('gif' => 'GIF', 'png' => 'PNG', 'svg'=>'SVG');
     $items[] = new admin_setting_configselect('filter_tex_convertformat', get_string('convertformat', 'admin'), get_string('configconvertformat', 'admin'), 'gif', $formats);
 
     foreach ($items as $item) {

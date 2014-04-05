@@ -789,6 +789,7 @@ $string['passwordpolicy'] = 'Password policy';
 $string['passwordresettime'] = 'Maximum time to validate password reset request';
 $string['pathconvert'] = 'Path of <i>convert</i> binary';
 $string['pathdvips'] = 'Path of <i>dvips</i> binary';
+$string['pathdvisvgm'] = 'Path of <i>dvisvgm</i> binary';
 $string['pathlatex'] = 'Path of <i>latex</i> binary';
 $string['pathtoclam'] = 'clam AV path';
 $string['pathtodot'] = 'Path to dot';
