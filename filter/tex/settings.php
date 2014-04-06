@@ -47,6 +47,7 @@ if ($ADMIN->fulltree) {
         $default_filter_tex_pathlatex   = "/sw/bin/latex";
         $default_filter_tex_pathdvips   = "/sw/bin/dvips";
         $default_filter_tex_pathconvert = "/sw/bin/convert";
+        $default_filter_tex_pathdvisvgm = "";
 
     } else if (PHP_OS=='WINNT' or PHP_OS=='WIN32' or PHP_OS=='Windows') {
         // note: you need Ghostscript installed (standard), miktex (standard)
@@ -54,11 +55,13 @@ if ($ADMIN->fulltree) {
         $default_filter_tex_pathlatex   = "\"c:\\texmf\\miktex\\bin\\latex.exe\" ";
         $default_filter_tex_pathdvips   = "\"c:\\texmf\\miktex\\bin\\dvips.exe\" ";
         $default_filter_tex_pathconvert = "\"c:\\imagemagick\\convert.exe\" ";
+        $default_filter_tex_pathdvisvgm = "";
 
     } else {
         $default_filter_tex_pathlatex   = '';
         $default_filter_tex_pathdvips   = '';
         $default_filter_tex_pathconvert = '';
+        $default_filter_tex_pathdvisvgm = "";
     }
 
     $items[] = new admin_setting_configexecutable('filter_tex_pathlatex', get_string('pathlatex', 'admin'), '', $default_filter_tex_pathlatex);

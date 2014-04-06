@@ -116,12 +116,29 @@ function filter_tex_updatedcallback($name) {
         return;
     }
 
-    if (!(is_file($CFG->filter_tex_pathlatex) && is_executable($CFG->filter_tex_pathlatex) &&
-          is_file($CFG->filter_tex_pathdvips) && is_executable($CFG->filter_tex_pathdvips) &&
-          is_file($CFG->filter_tex_pathconvert) && is_executable($CFG->filter_tex_pathconvert))) {
-        // LaTeX, dvips or convert are not available, and mimetex can only produce GIFs so...
+    $pathlatex = $CFG->filter_tex_pathlatex;
+    $pathdvips = $CFG->filter_tex_pathdvips;
+    $pathconvert = $CFG->filter_tex_pathconvert;
+    $pathdvisvgm = $CFG->filter_tex_pathdvisvgm;
+    $convertformat = $CFG->filter_tex_convertformat;
+
+    if (is_file($pathlatex) && is_executable($pathlatex) &&
+          is_file($pathdvips) && is_executable($pathdvips) &&
+          ((is_file($pathconvert) && is_executable($pathconvert))
+            || (is_file($pathdvisvgm) && is_executable($pathdvisvgm))
+        )) {
+            if ( ($convertformat=='svg')&&
+                      !(is_file($pathdvisvgm) && is_executable($pathdvisvgm)) )
+                { //If no dvisvgm use png instead of svg
+                    set_config('filter_tex_convertformat', 'png');
+                }
+            if ( ($convertformat=='png')&&
+                      !(is_file($pathconvert) && is_executable($pathconvert)) )
+                { //If no convert use svg instead of png
+                    set_config('filter_tex_convertformat', 'svg');
+                }
+    } else {
+        // LaTeX, dvips, or convert dvisvgm are not available, and mimetex can only produce GIFs so...
         set_config('filter_tex_convertformat', 'gif');
     }
 }
-
-
