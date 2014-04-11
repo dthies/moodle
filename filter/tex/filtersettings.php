@@ -50,9 +50,9 @@ if ($ADMIN->fulltree) {
     } else if (PHP_OS=='WINNT' or PHP_OS=='WIN32' or PHP_OS=='Windows') {
         // note: you need Ghostscript installed (standard), miktex (standard)
         // and ImageMagick (install at c:\ImageMagick)
-        $default_filter_tex_pathlatex   = "\"c:\\texmf\\miktex\\bin\\latex.exe\" ";
-        $default_filter_tex_pathdvips   = "\"c:\\texmf\\miktex\\bin\\dvips.exe\" ";
-        $default_filter_tex_pathconvert = "\"c:\\imagemagick\\convert.exe\" ";
+        $default_filter_tex_pathlatex   = "c:\\texmf\\miktex\\bin\\latex.exe";
+        $default_filter_tex_pathdvips   = "c:\\texmf\\miktex\\bin\\dvips.exe";
+        $default_filter_tex_pathconvert = "c:\\imagemagick\\convert.exe";
 
     } else {
         $default_filter_tex_pathlatex   = '';
