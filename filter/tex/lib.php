@@ -116,18 +116,18 @@ function filter_tex_updatedcallback($name) {
         return;
     }
     $pathlatex = $CFG->filter_tex_pathlatex;
-    //Remove quotes from pathnames to provide backward compatibility
-    if(is_numeric(strpos($pathlatex, '"'))) {
+    // Remove quotes from pathnames to provide backward compatibility
+    if (is_numeric(strpos($pathlatex, '"'))) {
         $pathlatex = str_replace('"', '', $pathlatex);
         set_config('filter_tex_pathlatex', $pathlatex);
     }
     $pathdvips = $CFG->filter_tex_pathdvips;
-    if(is_numeric(strpos($pathdvips, '"'))) {
+    if (is_numeric(strpos($pathdvips, '"'))) {
         $pathdvips = str_replace( '"', '', $pathdvips );
         set_config('filter_tex_pathdvips', $pathdvips);
     }
     $pathconvert = $CFG->filter_tex_pathconvert;
-    if(is_numeric(strpos($pathconvert, '"'))) {
+    if (is_numeric(strpos($pathconvert, '"'))) {
         $pathconvert = str_replace('"', '', $pathconvert);
         set_config('filter_tex_pathconvert', $pathconvert);
     }
