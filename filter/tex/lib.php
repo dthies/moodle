@@ -127,6 +127,15 @@ function filter_tex_updatedcallback($name) {
 
     $pathdvips = get_config('filter_tex', 'pathdvips');
     $pathconvert = get_config('filter_tex', 'pathconvert');
+    // Remove quotes from pathnames to provide backward compatibility
+    if (is_numeric(strpos($pathconvert . $pathdvips . $pathconvert, '"'))) {
+        $pathlatex = trim($pathlatex, ' "');
+        set_config('pathlatex', $pathlatex, 'filter_tex');
+        $pathdvips = trim($pathdvips, ' "');
+        set_config('pathdvips', $pathdvips, 'filter_tex');
+        $pathconvert = trim($pathconvert, ' "');
+        set_config('pathconvert', $pathconvert, 'filter_tex');
+    }
 
     if (!(is_file($pathlatex) && is_executable($pathlatex) &&
           is_file($pathdvips) && is_executable($pathdvips) &&

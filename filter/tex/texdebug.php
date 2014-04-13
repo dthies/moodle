@@ -248,14 +248,17 @@
         chdir($latex->temp_dir);
 
         // step 1: latex command
+        $pathlatex = escapeshellarg($pathlatex);
         $cmd = "$pathlatex --interaction=nonstopmode --halt-on-error $tex";
         $output .= execute($cmd);
 
         // step 2: dvips command
+        $pathdvips = escapeshellarg($pathdvips);
         $cmd = "$pathdvips -E $dvi -o $ps";
         $output .= execute($cmd);
 
         // step 3: convert command
+        $pathconvert = escapeshellarg($pathconvert);
         $cmd = "$pathconvert -density 240 -trim $ps $img ";
         $output .= execute($cmd);
 
