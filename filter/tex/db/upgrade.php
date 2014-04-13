@@ -65,5 +65,14 @@ function xmldb_filter_tex_upgrade($oldversion) {
         upgrade_plugin_savepoint(true, 2013120300, 'filter', 'tex');
     }
 
+    if ($oldversion < 2013120301) {
+        $settings = array('pathlatex', 'pathconvert', 'pathdvips');
+        foreach ($settings as $setting) {
+            if (get_config('filter_tex', $setting) !== false) {
+                set_config($setting, trim(get_config('filter_tex', $setting), " '\""), 'filter_tex');
+            }
+        }
+    }
+
     return true;
 }
