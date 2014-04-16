@@ -116,9 +116,17 @@ function filter_tex_updatedcallback($name) {
         return;
     }
 
-    if (!(is_file($CFG->filter_tex_pathlatex) && is_executable($CFG->filter_tex_pathlatex) &&
-          is_file($CFG->filter_tex_pathdvips) && is_executable($CFG->filter_tex_pathdvips) &&
-          is_file($CFG->filter_tex_pathconvert) && is_executable($CFG->filter_tex_pathconvert))) {
+    $pathlatex = $CFG->filter_tex_pathlatex;
+    $pathdvips = $CFG->filter_tex_pathdvips;
+    $pathconvert = $CFG->filter_tex_pathconvert;
+    // Remove quotes from pathnames to provide backward compatibility.
+    $pathlatex = trim($pathlatex, " '\"");
+    $pathdvips = trim($pathdvips, " '\"");
+    $pathconvert = trim($pathconvert, " '\"");
+
+    if (!(is_file($pathlatex) && is_executable($pathlatex) &&
+          is_file($pathdvips) && is_executable($pathdvips) &&
+          is_file($pathconvert) && is_executable($pathconvert))) {
         // LaTeX, dvips or convert are not available, and mimetex can only produce GIFs so...
         set_config('filter_tex_convertformat', 'gif');
     }
