@@ -127,6 +127,10 @@ function filter_tex_updatedcallback($name) {
 
     $pathdvips = get_config('filter_tex', 'pathdvips');
     $pathconvert = get_config('filter_tex', 'pathconvert');
+    // Remove quotes from pathnames to provide backward compatibility.
+    $pathlatex = trim($pathlatex, " '\"");
+    $pathdvips = trim($pathdvips, " '\"");
+    $pathconvert = trim($pathconvert, " '\"");
 
     if (!(is_file($pathlatex) && is_executable($pathlatex) &&
           is_file($pathdvips) && is_executable($pathdvips) &&
