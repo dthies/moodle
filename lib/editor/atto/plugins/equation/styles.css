@@ -23,4 +23,9 @@
 
 .atto_form .atto_equation_preview {
     margin-bottom: 0px; /* Turn off the margin-bottom from the class "well" */
+    width: 500px;
+    height: 100px;
+    top: 0;
+    left: 0;
+    overflow: hidden;
 }
