@@ -22,6 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['blockquote'] = 'Block quote';
 $string['h3'] = 'Heading (large)';
 $string['h4'] = 'Heading (medium)';
 $string['h5'] = 'Heading (small)';
