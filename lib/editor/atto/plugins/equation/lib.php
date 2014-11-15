@@ -82,8 +82,11 @@ function atto_equation_params_for_js($elementid, $options, $fpoptions) {
                 'elements' => get_config('atto_equation', 'librarygroup4'),
             ));
 
+    $delay = get_config('atto_equation', 'delay');
+
     return array('texfilteractive' => $texfilteractive,
                  'contextid' => $context->id,
+                 'delay' => $delay,
                  'library' => $library,
                  'texdocsurl' => get_docs_url('Using_TeX_Notation'));
 }
