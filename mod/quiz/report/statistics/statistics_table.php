@@ -82,6 +82,9 @@ class quiz_statistics_table extends flexible_table {
         $columns[] = 'name';
         $headers[] = get_string('questionname', 'quiz');
 
+        $columns[] = 'tags';
+        $headers[] = get_string('tags');
+
         $columns[] = 's';
         $headers[] = get_string('attempts', 'quiz_statistics');
 
@@ -251,6 +254,27 @@ class quiz_statistics_table extends flexible_table {
         }
 
         return $name;
+    }
+
+    /**
+     * The tags associated with this question.
+     *
+     * @param \core_question\statistics\questions\calculated $questionstat stats for the question.
+     * @return string contents of this table cell.
+     */
+    protected function col_tags($questionstat) {
+        global $DB;
+        if (!isset($questionstat->question->id)) {
+            return 0;
+        }
+        $sql = "SELECT name, rawname FROM mdl_tag AS tag JOIN mdl_tag_instance AS ti ON ti.tagid = tag.id ";
+        $sql .= "WHERE ti.itemid = '" . $questionstat->question->id . "';";
+        $tags = array();
+        $entries = $DB->get_records_sql($sql);
+        foreach ($entries as $entry) {
+            $tags[] = $entry->rawname;
+        }
+        return implode(', ', $tags);
     }
 
     /**
