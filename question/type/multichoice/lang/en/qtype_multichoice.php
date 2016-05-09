@@ -31,6 +31,7 @@ $string['answernumberingABCD'] = 'A., B., C., ...';
 $string['answernumberingiii'] = 'i., ii., iii., ...';
 $string['answernumberingIIII'] = 'I., II., III., ...';
 $string['answernumberingnone'] = 'No numbering';
+$string['answernumberingselecttext'] = 'As line of text';
 $string['answersingleno'] = 'Multiple answers allowed';
 $string['answersingleyes'] = 'One answer only';
 $string['choiceno'] = 'Choice {$a}';

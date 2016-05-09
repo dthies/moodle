@@ -1,3 +1,13 @@
+.que.multichoice .formulation .answer.selecttext input[type="checkbox"]:checked+label {
+    color: red;
+    background-color: #fdf
+}
+.que.multichoice .formulation .answer.selecttext input {
+    display: none}
+.que.multichoice .formulation .answer.selecttext div {
+    display: inline;
+    padding: 0}
+
 .que.multichoice .answer .specificfeedback {
     display: inline;
     padding: 0 0.7em;

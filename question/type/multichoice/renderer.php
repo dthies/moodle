@@ -129,7 +129,7 @@ abstract class qtype_multichoice_renderer_base extends qtype_with_combined_feedb
         $result .= html_writer::start_tag('div', array('class' => 'ablock'));
         $result .= html_writer::tag('div', $this->prompt(), array('class' => 'prompt'));
 
-        $result .= html_writer::start_tag('div', array('class' => 'answer'));
+        $result .= html_writer::start_tag('div', array('class' => 'answer ' . $question->answernumbering));
         foreach ($radiobuttons as $key => $radio) {
             $result .= html_writer::tag('div', $radio . ' ' . $feedbackimg[$key] . $feedback[$key],
                     array('class' => $classes[$key])) . "\n";
@@ -174,6 +174,7 @@ abstract class qtype_multichoice_renderer_base extends qtype_with_combined_feedb
             case 'IIII':
                 $number = strtoupper(question_utils::int_to_roman($num + 1));
                 break;
+            case 'selecttext':
             case 'none':
                 return '';
             default:

@@ -233,7 +233,7 @@ class qtype_multichoice extends question_type {
      */
     public static function get_numbering_styles() {
         $styles = array();
-        foreach (array('abc', 'ABCD', '123', 'iii', 'IIII', 'none') as $numberingoption) {
+        foreach (array('abc', 'ABCD', '123', 'iii', 'IIII', 'none', 'selecttext') as $numberingoption) {
             $styles[$numberingoption] =
                     get_string('answernumbering' . $numberingoption, 'qtype_multichoice');
         }
