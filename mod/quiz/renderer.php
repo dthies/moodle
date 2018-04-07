@@ -52,6 +52,13 @@ class mod_quiz_renderer extends plugin_renderer_base {
         $output = '';
         $output .= $this->header();
         $output .= $this->review_summary_table($summarydata, $page);
+        if ($manager = get_grading_manager($attemptobj->get_quizobj()->get_context(), 'mod_quiz', 'attempts')) {
+            $controller = $manager->get_active_controller();
+            foreach ($controller->get_active_instances($attemptobj->get_attemptid()) as $instance) {
+                $output .= $instance->render_grade($page, $attemptobj->get_attemptid(), array(), 'Unavailable', true);
+            }
+        }
+
         $output .= $this->review_form($page, $showall, $displayoptions,
                 $this->questions($attemptobj, true, $slots, $page, $showall, $displayoptions),
                 $attemptobj);
@@ -779,6 +786,7 @@ class mod_quiz_renderer extends plugin_renderer_base {
     public function view_page($course, $quiz, $cm, $context, $viewobj) {
         $output = '';
         $output .= $this->view_information($quiz, $cm, $context, $viewobj->infomessages);
+        $output .= $viewobj->gradingpreview;
         $output .= $this->view_table($quiz, $context, $viewobj);
         $output .= $this->view_result_info($quiz, $context, $cm, $viewobj);
         $output .= $this->box($this->view_page_buttons($viewobj), 'quizattempt');

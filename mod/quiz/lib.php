@@ -1765,9 +1765,21 @@ function quiz_supports($feature) {
         case FEATURE_SHOW_DESCRIPTION:          return true;
         case FEATURE_CONTROLS_GRADE_VISIBILITY: return true;
         case FEATURE_USES_QUESTIONS:            return true;
+        case FEATURE_ADVANCED_GRADING:          return true;
 
         default: return null;
     }
+}
+
+/**
+ * Lists all gradable areas for the advanced grading methods framework
+ *
+ * @return array('string'=>'string') An array with area names as keys and descriptions as values
+ */
+function quiz_grading_areas_list() {
+    return array(
+        'attempts' => get_string('attempts', 'quiz'),
+    );
 }
 
 /**

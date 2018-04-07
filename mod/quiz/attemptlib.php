@@ -1819,7 +1819,7 @@ class quiz_attempt {
      *                                          appropriate prefix added.
      */
     public function process_submitted_actions($timestamp, $becomingoverdue = false, $simulatedresponses = null) {
-        global $DB;
+        global $CFG, $DB;
 
         $transaction = $DB->start_delegated_transaction();
 
@@ -1835,6 +1835,13 @@ class quiz_attempt {
         $this->attempt->timemodified = $timestamp;
         if ($this->attempt->state == self::FINISHED) {
             $this->attempt->sumgrades = $this->quba->get_total_mark();
+            require_once($CFG->dirroot.'/grade/grading/lib.php');
+            if ($manager = get_grading_manager($this->quizobj->get_context(), 'mod_quiz', 'attempts')) {
+                $controller = $manager->get_active_controller();
+                $instance = $controller->create_instance($this->get_userid(), $this->get_attemptid())->get_grade();
+                $this->attempt->sumgrades = $instance->submit_and_get_grade(array());
+                //$this->attempt->sumgrades = $controller->create_instance($this->get_userid(), $this->get_attemptid())->get_grade();
+            }
         }
         if ($becomingoverdue) {
             $this->process_going_overdue($timestamp, true);
@@ -1938,7 +1945,7 @@ class quiz_attempt {
     }
 
     public function process_finish($timestamp, $processsubmitted) {
-        global $DB;
+        global $CFG, $DB;
 
         $transaction = $DB->start_delegated_transaction();
 
@@ -1952,6 +1959,14 @@ class quiz_attempt {
         $this->attempt->timemodified = $timestamp;
         $this->attempt->timefinish = $timestamp;
         $this->attempt->sumgrades = $this->quba->get_total_mark();
+        require_once($CFG->dirroot.'/grade/grading/lib.php');
+        if (($manager = get_grading_manager($this->quizobj->get_context(), 'mod_quiz', 'attempts')) &&
+            ($controller = $manager->get_active_controller())) {
+                $instance = $controller->create_instance($this->get_userid(), $this->get_attemptid());
+                $this->attempt->sumgrades = $instance->submit_and_get_grade(array(), $this->attempt->id);
+        } else {
+            $this->attempt->sumgrades = $this->quba->get_total_mark();
+        }
         $this->attempt->state = self::FINISHED;
         $this->attempt->timecheckstate = null;
         $DB->update_record('quiz_attempts', $this->attempt);

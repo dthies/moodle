@@ -241,6 +241,12 @@ if (isguestuser()) {
     // If they are not enrolled in this course in a good enough role, tell them to enrol.
     echo $output->view_page_notenrolled($course, $quiz, $cm, $context, $viewobj->infomessages);
 } else {
+    if ($controller = get_grading_manager($context, 'mod_quiz', 'attempts')->get_active_controller()) {
+        $viewobj->gradingpreview  = $controller->render_preview($PAGE);
+    } else {
+        $viewobj->gradingpreview  = '';
+    }
+
     echo $output->view_page($course, $quiz, $cm, $context, $viewobj);
 }
 
