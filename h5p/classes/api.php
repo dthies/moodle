@@ -377,6 +377,12 @@ class api {
         $component = array_shift($parts);
         $filearea = array_shift($parts);
 
+        // Remove category and format parameters from question file paths.
+        if ($component == 'question') {
+            array_shift($parts);
+            array_shift($parts);
+        }
+
         // Ignore draft files, because they are considered temporary files, so shouldn't be displayed.
         if ($filearea == 'draft') {
             return false;
