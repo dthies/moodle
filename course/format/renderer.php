@@ -799,12 +799,12 @@ abstract class format_section_renderer_base extends core_course_renderer {
                 'core_course\output\course_format and override render_course_format method instead', DEBUG_DEVELOPER);
 
         // Some abstract methods are not needed anymore. We simulate them in case they are not present.
-        if (method_exists('start_section_list')) {
+        if (method_exists($this, 'start_section_list')) {
             $startlist = $this->start_section_list();
         } else {
             $startlist = html_writer::start_tag('ul', ['class' => '']);
         }
-        if (method_exists('end_section_list')) {
+        if (method_exists($this, 'end_section_list')) {
             $endlist = $this->end_section_list();
         } else {
             $endlist = html_writer::end_tag('ul');
@@ -920,17 +920,17 @@ abstract class format_section_renderer_base extends core_course_renderer {
                 'render_course_format insteadand override render_course_format method instead', DEBUG_DEVELOPER);
 
         // Some abstract methods are not needed anymore. We simulate them in case they are not present.
-        if (method_exists('start_section_list')) {
+        if (method_exists($this, 'start_section_list')) {
             $startlist = $this->start_section_list();
         } else {
             $startlist = html_writer::start_tag('ul', ['class' => '']);
         }
-        if (method_exists('end_section_list')) {
+        if (method_exists($this, 'end_section_list')) {
             $endlist = $this->end_section_list();
         } else {
             $endlist = html_writer::end_tag('ul');
         }
-        if (method_exists('page_title')) {
+        if (method_exists($this, 'page_title')) {
             $pagetitle = $this->page_title();
         } else {
             $pagetitle = '';
