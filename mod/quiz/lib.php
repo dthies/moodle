@@ -1837,7 +1837,42 @@ function quiz_pluginfile($course, $cm, $context, $filearea, $args, $forcedownloa
  * @return bool false if file not found, does not return if found - justsend the file
  */
 function quiz_question_pluginfile($course, $context, $component,
-        $filearea, $qubaid, $slot, $args, $forcedownload, array $options=array()) {
+        $filearea, $qubaid, $slot, $args, $forcedownload, array $options = array()) {
+
+    if (!$fullpath = quiz_question_pluginfile_path($course, $context, $component,
+        $filearea, $qubaid, $slot, $args, $forcedownload, $options)) {
+        send_file_not_found();
+    }
+
+    $fs = get_file_storage();
+
+    if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
+        send_file_not_found();
+    }
+
+    send_stored_file($file, 0, 0, $forcedownload, $options);
+}
+
+/**
+ * Called via quiz_question_pluginfile or question_get_path_from_plugin to get
+ * the filepath for files in a question in a question_attempt when that attempt
+ * is a quiz attempt.
+ *
+ * @package  mod_quiz
+ * @category files
+ * @param stdClass $course course settings object
+ * @param stdClass $context context object
+ * @param string $component the name of the component we are serving files for.
+ * @param string $filearea the name of the file area.
+ * @param int $qubaid the attempt usage id.
+ * @param int $slot the id of a question in this quiz attempt.
+ * @param array $args the remaining bits of the file path.
+ * @param bool $forcedownload whether the user must be forced to download the file.
+ * @param array $options additional options affecting the file serving
+ * @return null|string null if question not accessible, otherwise returns path
+ */
+function quiz_question_pluginfile_path($course, $context, $component,
+        $filearea, $qubaid, $slot, $args, $forcedownload, array $options = array()): ?string {
     global $CFG;
     require_once($CFG->dirroot . '/mod/quiz/locallib.php');
 
@@ -1859,17 +1894,11 @@ function quiz_question_pluginfile($course, $context, $component,
 
     if (!$attemptobj->check_file_access($slot, $isreviewing, $context->id,
             $component, $filearea, $args, $forcedownload)) {
-        send_file_not_found();
+        return null;
     }
 
-    $fs = get_file_storage();
     $relativepath = implode('/', $args);
-    $fullpath = "/$context->id/$component/$filearea/$relativepath";
-    if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
-        send_file_not_found();
-    }
-
-    send_stored_file($file, 0, 0, $forcedownload, $options);
+    return "/$context->id/$component/$filearea/$relativepath";
 }
 
 /**
