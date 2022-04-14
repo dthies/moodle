@@ -233,7 +233,36 @@ class question_preview_options extends question_display_options {
  */
 function question_preview_question_pluginfile($course, $context, $component,
         $filearea, $qubaid, $slot, $args, $forcedownload, $fileoptions) {
-    global $USER, $DB, $CFG;
+
+    $fs = get_file_storage();
+
+    $fullpath = question_preview_question_pluginfile_path($course, $context, $component,
+            $filearea, $qubaid, $slot, $args, $forcedownload);
+
+    if (!$fullpath or !$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
+        send_file_not_found();
+    }
+
+    send_stored_file($file, 0, 0, $forcedownload, $fileoptions);
+}
+
+/**
+ * Called from question_preview_question_pluginfile or question_get_path_from_pluginfile
+ * to find filepath for stored file of * a question in a question_attempt when that
+ * attempt is a preview.
+ *
+ * @param stdClass $course course settings object
+ * @param stdClass $context context object
+ * @param string $component the name of the component we are serving files for.
+ * @param string $filearea the name of the file area.
+ * @param int $qubaid the question_usage this image belongs to.
+ * @param int $slot the relevant slot within the usage.
+ * @param array $args the remaining bits of the file path.
+ * @param bool $forcedownload whether the user must be forced to download the file.
+ * @return null|string null if file not accessible, filepath if found
+ */
+function question_preview_question_pluginfile_path($course, $context, $component,
+        $filearea, $qubaid, $slot, $args, $forcedownload): ?string {
 
     list($context, $course, $cm) = get_context_info_array($context->id);
     require_login($course, false, $cm);
@@ -241,9 +270,8 @@ function question_preview_question_pluginfile($course, $context, $component,
     $quba = question_engine::load_questions_usage_by_activity($qubaid);
 
     if (!question_has_capability_on($quba->get_question($slot, false), 'use')) {
-        send_file_not_found();
+        return null;
     }
-
     $options = new question_display_options();
     $options->feedback = question_display_options::VISIBLE;
     $options->numpartscorrect = question_display_options::VISIBLE;
@@ -253,17 +281,11 @@ function question_preview_question_pluginfile($course, $context, $component,
     $options->history = question_display_options::VISIBLE;
     if (!$quba->check_file_access($slot, $options, $component,
             $filearea, $args, $forcedownload)) {
-        send_file_not_found();
+        return null;
     }
 
-    $fs = get_file_storage();
     $relativepath = implode('/', $args);
-    $fullpath = "/{$context->id}/{$component}/{$filearea}/{$relativepath}";
-    if (!$file = $fs->get_file_by_hash(sha1($fullpath)) or $file->is_directory()) {
-        send_file_not_found();
-    }
-
-    send_stored_file($file, 0, 0, $forcedownload, $fileoptions);
+    return "/{$context->id}/{$component}/{$filearea}/{$relativepath}";
 }
 
 /**

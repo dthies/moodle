@@ -89,3 +89,74 @@ function core_question_output_fragment_tags_form($args) {
         return $mform->render();
     }
 }
+
+/**
+ * Given an array with a file path, it returns the itemid and the filepath for the defined filearea.
+ *
+ * @param  string $filearea The filearea.
+ * @param  array  $args The path (the part after the filearea and before the filename).
+ * @return array The itemid and the filepath inside the $args path, for the defined filearea.
+ */
+function question_get_path_from_pluginfile(string $filearea, array $args) : ?array {
+    global $CFG, $COURSE, $DB;
+
+    // First argument should be question usage.
+    $qubaid = (int)array_shift($args);
+
+    // Second argument  should be question slot.
+    $slot = (int)array_shift($args);
+
+    $record = $DB->get_record('question_usages', ['id' => $qubaid]);
+    if (empty($record)) {
+        return null;
+    }
+
+    $context = context::instance_by_id($record->contextid);
+    if ($record->component === 'core_question_preview') {
+        require_once($CFG->dirroot . '/question/engine/lib.php');
+        require_once($CFG->dirroot . '/question/previewlib.php');
+        if (!$filepath = question_preview_question_pluginfile_path($COURSE, $context,
+                'question', $filearea, $qubaid, $slot, $args, true)) {
+            return null;
+        }
+    } else {
+        $dir = core_component::get_component_directory($record->component);
+        if (!file_exists("$dir/lib.php")) {
+            return null;
+        }
+        require_once("$dir/lib.php");
+        $options = [];
+
+        $filefunction = $record->component . '_question_pluginfile_path';
+        if (function_exists($filefunction)) {
+            $filepath = $filefunction($COURSE, $context, 'question', $filearea, $qubaid, $slot,
+                $args, $forcedownload, $options);
+        } else if (strpos($record->component, 'mod_') === 0) {
+            // Okay, we're here so lets check for function without 'mod_'.
+            $filefunctionold  = substr($record->component, 4) . '_question_pluginfile_path';
+            if (function_exists($filefunctionold)) {
+                $filepath = $filefunctionold($COURSE, $context, 'question', $filearea, $qubaid, $slot,
+                    $args, true, $options);
+            }
+        }
+
+        if (!$filepath) {
+            return null;
+        }
+    }
+
+    // Third argument is question id which is used as itemid.
+    $itemid = array_shift($args);
+
+    // Get the filepath.
+    if (empty($args)) {
+        $filepath = '/';
+    } else {
+        $filepath = '/' . implode('/', $args) . '/';
+    }
+
+    return [
+        'itemid' => $itemid,
+        'filepath' => $filepath,
+    ];
+}
