@@ -56,4 +56,47 @@ final class text_filter_test extends \advanced_testcase {
             ['zh_cn', 'zh-hans'], // Explicit mapping of the Simplified Chinese script.
         ];
     }
+
+    /**
+     * Test compatibility with glossary autolinker
+     *
+     * @return void
+     */
+    public function test_glossary_entry(): void {
+        global $CFG;
+        require_once($CFG->dirroot . '/mod/glossary/classes/external.php');
+
+        $this->resetAfterTest(true);
+        $this->setAdminUser();
+
+        // Enable glossary filter at top level.
+        filter_set_global_state('mathjaxloader', TEXTFILTER_ON);
+        filter_set_global_state('glossary', TEXTFILTER_ON);
+        $CFG->glossary_linkentries = 1;
+
+        // Create a test course.
+        $course = $this->getDataGenerator()->create_course();
+        $context = \context_course::instance($course->id);
+
+        // Create a glossary.
+        $glossary = $this->getDataGenerator()->create_module(
+            'glossary',
+            ['course' => $course->id, 'mainglossary' => 1]
+        );
+
+        // Create two entries with ampersands and one normal entry.
+        /** @var \mod_glossary_generator $generator */
+        $generator = $this->getDataGenerator()->get_plugin_generator('mod_glossary');
+        $simple = $generator->create_content($glossary, ['concept' => 'simple']);
+        $withmath = $generator->create_content($glossary, [
+            'concept' => 'parabolic',
+            'definition' => 'more \(y = x^2\)',
+        ]);
+
+        // Check whether container class is inserted iff math is in definition.
+        $filtered = \filter_glossary\external\get_entry_by_id::execute($simple->id);
+        $this->assertFalse(strpos($filtered['entry']->definition, 'class="filter_mathjaxloader_equation"'));
+        $filtered = \filter_glossary\external\get_entry_by_id::execute($withmath->id);
+        $this->assertNotEmpty(strpos($filtered['entry']->definition, 'class="filter_mathjaxloader_equation"'));
+    }
 }

@@ -90,7 +90,7 @@ const showGlossaryEntry = async(entryId) => {
  */
 const fetchGlossaryEntry = (entryId) => {
     const request = {
-        methodname: 'mod_glossary_get_entry_by_id',
+        methodname: 'filter_glossary_get_entry_by_id',
         args: {
             id: entryId,
         },

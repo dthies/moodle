@@ -15,18 +15,23 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Glossary filter version information
+ * Glossary filter external functions.
  *
- * @package    filter
- * @subpackage glossary
- * @copyright  2011 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
+ * @package    filter_glossary
+ * @category   external
+ * @copyright  2025 Daniel Thies <dethies@gmail.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version  = 2024100701;
-$plugin->requires = 2024100100;  // Requires this Moodle version.
-$plugin->component= 'filter_glossary';
-
-$plugin->dependencies = ['mod_glossary' => 2024100100];
+$functions = [
+    'filter_glossary_get_entry_by_id' => [
+        'classname'     => '\\filter_glossary\\external\\get_entry_by_id',
+        'methodname'    => 'execute',
+        'description'   => 'Get an entry by ID',
+        'type'          => 'read',
+        'ajax'          => true,
+        'capabilities'  => 'mod/glossary:view',
+    ],
+];
