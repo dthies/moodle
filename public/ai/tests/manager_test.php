@@ -770,6 +770,12 @@ final class manager_test extends \advanced_testcase {
 
         $aitoolsenabled = $manager::is_ai_tools_enabled_in_course($context);
         $this->assertFalse($aitoolsenabled);
+
+        set_config('enableaitools', 0, 'moodlecourse');
+        $course = $generator->create_course();
+        $context = \context_course::instance($course->id);
+        $aitoolsenabled = $manager::is_ai_tools_enabled_in_course($context);
+        $this->assertFalse($aitoolsenabled);
     }
 
     /**
