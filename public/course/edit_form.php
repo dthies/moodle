@@ -422,7 +422,7 @@ class course_edit_form extends moodleform {
         if (($courseplacementenabled || $editorplacementenabled) && $providerenabled) {
             $mform->addElement('header', 'aitoolshdr', get_string('aitools', 'ai'));
             $mform->addElement('selectyesno', 'enableaitools', get_string('enableaitoolsincourse', 'ai'));
-            $mform->setDefault('enableaitools', $course->enableaitools ?? 1);
+            $mform->setDefault('enableaitools', $course->enableaitools ?? $courseconfig->enableaitools);
             $mform->addElement('static', 'aitoolsincoursedesc', '', get_string('aitoolsincoursedesc', 'ai'));
         }
 

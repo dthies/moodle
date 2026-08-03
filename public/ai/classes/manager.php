@@ -775,9 +775,10 @@ class manager {
         }
 
         $enableaitools = $DB->get_field('course', 'enableaitools', ['id' => $courseid]);
-        if (!is_null($enableaitools) && !$enableaitools) {
-            return false;
+        if (is_null($enableaitools)) {
+            return !empty(get_config('moodlecourse', 'enableaitools'));
         }
-        return true;
+
+        return !empty($enableaitools);
     }
 }
