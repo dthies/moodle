@@ -294,8 +294,8 @@ if ($hassiteconfig or has_any_capability($capabilities, $systemcontext)) {
     $temp->add(
         new admin_setting_configselect(
             'moodlecourse/enableaitools',
-            new lang_string('enableaitoolsincourse', 'ai'),
-            new lang_string('aitoolsincoursedesc', 'ai'),
+            new lang_string('enableaitoolsincoursedefault', 'ai'),
+            new lang_string('aitoolsincoursedefaultdesc', 'ai'),
             1,
             [
                 0 => new lang_string('no'),
