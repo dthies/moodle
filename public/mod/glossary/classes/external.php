@@ -1381,6 +1381,7 @@ class mod_glossary_external extends external_api {
     public static function get_entry_by_id_parameters() {
         return new external_function_parameters(array(
             'id' => new external_value(PARAM_INT, 'Glossary entry ID'),
+            'filter' => new external_value(PARAM_BOOL, 'Whether to filter result', VALUE_DEFAULT, false),
         ));
     }
 
@@ -1388,17 +1389,26 @@ class mod_glossary_external extends external_api {
      * Get an entry.
      *
      * @param int $id The entry ID.
+     * @param bool $filter Whether to filter result
      * @return array Containing entry and warnings.
      * @since Moodle 3.1
      * @throws moodle_exception
      * @throws invalid_parameter_exception
      */
-    public static function get_entry_by_id($id) {
+    public static function get_entry_by_id($id, $filter = false) {
         global $DB, $USER;
 
-        $params = self::validate_parameters(self::get_entry_by_id_parameters(), array('id' => $id));
+        $params = self::validate_parameters(self::get_entry_by_id_parameters(), [
+            'id' => $id,
+            'filter' => $filter,
+        ]);
         $id = $params['id'];
         $warnings = array();
+
+        if ($params['filter']) {
+            $settings = \core_external\external_settings::get_instance();
+            $settings->set_filter(true);
+        }
 
         // Get and validate the glossary.
         $entry = $DB->get_record('glossary_entries', array('id' => $id), '*', MUST_EXIST);
