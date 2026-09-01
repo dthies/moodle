@@ -16,6 +16,8 @@
 
 namespace filter_mathjaxloader;
 
+use core_plugin_manager;
+
 /**
  * Unit tests for the MathJax loader filter.
  *
@@ -64,6 +66,10 @@ final class text_filter_test extends \advanced_testcase {
      */
     public function test_glossary_entry(): void {
         global $CFG;
+
+        if (empty(core_plugin_manager::instance()->get_plugin_info('mod_glossary'))) {
+            $this->markTestSkipped('Glossary module is not installed');
+        }
         require_once($CFG->dirroot . '/mod/glossary/classes/external.php');
 
         $this->resetAfterTest(true);
@@ -95,8 +101,8 @@ final class text_filter_test extends \advanced_testcase {
 
         // Check whether container class is inserted iff math is in definition.
         $filtered = \mod_glossary_external::get_entry_by_id($simple->id);
-        $this->assertFalse(strpos($filtered['entry']->definition, 'class="filter_mathjaxloader_equation"'));
+        $this->assertStringNotContainsString('class="filter_mathjaxloader_equation"', $filtered['entry']->definition);
         $filtered = \mod_glossary_external::get_entry_by_id($withmath->id, true);
-        $this->assertNotEmpty(strpos($filtered['entry']->definition, 'class="filter_mathjaxloader_equation"'));
+        $this->assertStringContainsString('class="filter_mathjaxloader_equation"', $filtered['entry']->definition);
     }
 }
