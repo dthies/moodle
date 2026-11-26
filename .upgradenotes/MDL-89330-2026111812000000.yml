@@ -1,0 +1,17 @@
+issueNumber: MDL-89330
+notes:
+  core_ai:
+    - message: >-
+        A new site default setting, `moodlecourse/enableaitools`, controls
+        whether AI tools are available in courses. It appears under Site
+        administration > Courses > Course default settings and takes effect
+        once AI providers and placements are configured. On upgrade it is
+        seeded to Yes, preserving the previous behaviour.
+
+        Since the course setting 'enableaitools' only appears after
+        placements are configured, the current value of this settings
+        will be used as the 'enableaitools' setting of courses that were
+        last modified before configuring AI placements. After configuring
+        AI placements, it will be used as the default value when editing
+        the settings.
+      type: improved

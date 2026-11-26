@@ -682,7 +682,7 @@ abstract class moodleform_mod extends moodleform {
             $mform->addElement('header', 'aitoolshdr', get_string('aitools', 'ai'));
 
             // Check if AI tools is enabled in the course.
-            if (is_null($COURSE->enableaitools) || $COURSE->enableaitools) {
+            if ($aimanager::is_ai_tools_enabled_in_course(\context_course::instance($COURSE->id))) {
                 $mform->addElement('selectyesno', 'enableaitools', get_string('enableaitoolsincourseactivity', 'ai'));
                 $mform->setDefault('enableaitools', $this->_cm->enableaitools ?? 1);
                 $mform->addElement('static', 'aitoolsincourseactivitydesc', '', get_string('aitoolsincourseactivitydesc', 'ai'));

@@ -1193,6 +1193,21 @@ final class manager_test extends \advanced_testcase {
         $context = \context_course::instance($course->id);
         $aitoolsenabled = $manager::is_ai_tools_enabled_in_course($context);
         $this->assertFalse($aitoolsenabled);
+
+        // A site default of Yes applies to a course that has no explicit value.
+        set_config('enableaitools', 1, 'moodlecourse');
+        $course = $generator->create_course();
+        $context = \context_course::instance($course->id);
+        $aitoolsenabled = $manager::is_ai_tools_enabled_in_course($context);
+        $this->assertTrue($aitoolsenabled);
+
+        // An explicit course value overrides the site default.
+        set_config('enableaitools', 0, 'moodlecourse');
+        $course = $generator->create_course();
+        $DB->set_field('course', 'enableaitools', 1, ['id' => $course->id]);
+        $context = \context_course::instance($course->id);
+        $aitoolsenabled = $manager::is_ai_tools_enabled_in_course($context);
+        $this->assertTrue($aitoolsenabled);
     }
 
     /**
